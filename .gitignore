@@ -184,3 +184,5 @@ devenv.local.nix
 tmp/
 tests/tmp
 .idea/
+
+docs/

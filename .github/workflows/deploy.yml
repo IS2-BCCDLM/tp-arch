@@ -24,21 +24,10 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y emacs-nox plantuml
-
-      - name: Execute Org Babel blocks
-        run: emacs --batch -l scripts/process-org.el
-
-      - name: Export to HTML
-        run: emacs --batch -Q --script scripts/export-to-html.el informe.org
-
       - name: Setup docs
         run: |
           mkdir -p docs
-          mv informe.html docs/index.html
+          cp informe.html docs/index.html
           cp -r assets docs/
 
       - name: Upload artifact
