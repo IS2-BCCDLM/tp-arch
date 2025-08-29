@@ -1,0 +1,86 @@
+#+LANGUAGE: es
+#+OPTIONS: toc:nil title:nil
+
+#+LATEX_CLASS_OPTIONS: [titlepage,a4paper]
+#+LATEX_HEADER_EXTRA: \hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,bookmarksopen=true}
+#+LATEX_HEADER_EXTRA: \usepackage{a4wide}
+#+LATEX_HEADER_EXTRA: \usepackage{bookmark}
+#+LATEX_HEADER_EXTRA: \usepackage{fancyhdr}
+#+LATEX_HEADER_EXTRA: \usepackage[spanish]{babel}
+#+LATEX_HEADER_EXTRA: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER_EXTRA: \usepackage[T1]{fontenc}
+#+LATEX_HEADER_EXTRA: \usepackage{graphicx}
+#+LATEX_HEADER_EXTRA: \usepackage{float}
+#+LATEX_HEADER_EXTRA: \usepackage{minted}
+#+LATEX_HEADER_EXTRA: \usepackage{svg}
+#+LATEX_HEADER_EXTRA: \usepackage{xcolor}
+#+LATEX_HEADER_EXTRA: \pagestyle{fancy}
+#+LATEX_HEADER_EXTRA: \fancyhf{}
+#+LATEX_HEADER_EXTRA: \fancyhead[L]{TP2 - Grupo 2}
+#+LATEX_HEADER_EXTRA: \fancyhead[R]{Redes - FIUBA}
+#+LATEX_HEADER_EXTRA: \renewcommand{\headrulewidth}{0.4pt}
+#+LATEX_HEADER_EXTRA: \fancyfoot[C]{\thepage}
+#+LATEX_HEADER_EXTRA: \renewcommand{\footrulewidth}{0.4pt}
+#+LATEX_HEADER_EXTRA: \usemintedstyle{stata-light}
+#+LATEX_HEADER_EXTRA: \newminted{c}{bgcolor={rgb}{0.95,0.95,0.95}}
+#+LATEX_HEADER_EXTRA: \usepackage{color}
+#+LATEX_HEADER_EXTRA: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER_EXTRA: \usepackage{fancyvrb}
+#+LATEX_HEADER_EXTRA: \fvset{framesep=1mm,fontfamily=courier,fontsize=\scriptsize,numbers=left,framerule=.3mm,numbersep=1mm}
+#+LATEX_HEADER_EXTRA: \usepackage[nottoc]{tocbibind}
+#+LATEX_HEADER_EXTRA: \usepackage{amsmath}
+#+LATEX_HEADER_EXTRA: \usepackage{changepage}
+#+LATEX_HEADER_EXTRA: \usepackage{caption}
+#+LATEX_HEADER_EXTRA: \captionsetup{aboveskip=5pt, belowskip=8pt}
+
+#+NAME: setup
+#+BEGIN_SRC emacs-lisp :results silent :exports none
+  (setq org-latex-minted-options
+    '(("bgcolor" "bg")))
+#+END_SRC
+
+#+BEGIN_EXPORT latex
+\begin{titlepage}
+    \hfill\includegraphics[width=6cm]{docs/imgs/logofiuba.jpg}
+    \centering
+    \vfill
+    \Huge \textbf{Trabajo Práctico: Melodia}
+    \vskip0.5cm
+    \Large \textbf{Grupo 2}
+    \vskip2cm
+    \Large [TA049] Ingenieria de Software II \\
+    Segundo cuatrimestre de 2025\\
+    \vfill
+    \begin{tabular}{ | l | l | l | }
+      \hline
+      Alumno & Padrón & Email \\ \hline
+      AVALOS, Victoria & 108434 & vavalos@fi.uba.ar \\ \hline
+      CASTRO MARTINEZ, Jose Ignacio & 106957 & jcastrom@fi.uba.ar \\ \hline
+      CIPRIANO, Victor & 106593 & vcipriano@fi.uba.ar \\ \hline
+      DEALBERA, Pablo Andres & 106858 & pdealbera@fi.uba.ar \\ \hline
+      DIEM, Walter Gabriel & 105618 & wdiem@fi.uba.ar \\ \hline
+    \end{tabular}
+    \vfill
+\end{titlepage}
+\renewcommand{\contentsname}{Índice}
+\tableofcontents
+\newpage
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+#+END_EXPORT
+
+#+BEGIN_SRC plantuml :file docs/imgs/connection-handshake.png :exports results
+@startuml
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 100
+scale 2.0
+participant Client
+participant Server
+
+Client ->(10) Server : [SYN]\nseq=0
+Server ->(10) Client : [SYN], [ACK]\nseq=0
+
+Client ->(10) Server : [ACK]\nseq=1\n data=1 (op_code)
+Server ->(10) Client : [ACK]\nseq=1
+
+@enduml
+#+END_SRC
