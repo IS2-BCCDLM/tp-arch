@@ -15,6 +15,8 @@ all: $(TARGET)
 
 # Rule to generate PDF
 $(TARGET): $(SOURCE)
+	@echo "Executing code blocks to generate images..."
+	@$(MAKE) execute-code-blocks
 	@echo "Compiling $< to PDF..."
 	@$(EMACS) $(EMACSFLAGS) || (echo "Compilation failed"; exit 1)
 

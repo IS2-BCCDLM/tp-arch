@@ -41,7 +41,7 @@
 
 #+BEGIN_EXPORT latex
 \begin{titlepage}
-    \hfill\includegraphics[width=6cm]{docs/imgs/logofiuba.jpg}
+    \hfill\includegraphics[width=6cm]{assets/logofiuba.jpg}
     \centering
     \vfill
     \Huge \textbf{Trabajo Práctico: Melodia}
@@ -54,11 +54,12 @@
     \begin{tabular}{ | l | l | l | }
       \hline
       Alumno & Padrón & Email \\ \hline
-      AVALOS, Victoria & 108434 & vavalos@fi.uba.ar \\ \hline
-      CASTRO MARTINEZ, Jose Ignacio & 106957 & jcastrom@fi.uba.ar \\ \hline
-      CIPRIANO, Victor & 106593 & vcipriano@fi.uba.ar \\ \hline
+      BRZOZA, Valeria & 107523 & vbrzoza@fi.uba.ar \\ \hline
+      CICHERO, Tomas & 107973 & tcichero@fi.uba.ar  \\ \hline
+      CONTRERAS VILLARROEL, Ricardo Luis & 107239 & rcontreras@fi.uba.ar \\ \hline
       DEALBERA, Pablo Andres & 106858 & pdealbera@fi.uba.ar \\ \hline
-      DIEM, Walter Gabriel & 105618 & wdiem@fi.uba.ar \\ \hline
+      LANZILOTTA, Valentina & 108257 & vlanzilotta@fi.uba.ar \\ \hline
+      MAKKOS, Juan Sebastian & 106229 & jmakkos@@fi.uba.ar \\ \hline
     \end{tabular}
     \vfill
 \end{titlepage}
@@ -68,19 +69,88 @@
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 #+END_EXPORT
 
-#+BEGIN_SRC plantuml :file docs/imgs/connection-handshake.png :exports results
+#+BEGIN_SRC plantuml :file assets/arch-1.png :exports results
 @startuml
-skinparam sequenceMessageAlign center
-skinparam ParticipantPadding 100
-scale 2.0
-participant Client
-participant Server
+!theme plain
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam component {
+    BackgroundColor lightblue
+    BorderColor black
+    FontSize 12
+}
+skinparam database {
+    BackgroundColor lightgreen
+    BorderColor black
+}
+skinparam cloud {
+    BackgroundColor lightyellow
+    BorderColor black
+}
 
-Client ->(10) Server : [SYN]\nseq=0
-Server ->(10) Client : [SYN], [ACK]\nseq=0
+title System Architecture Overview
 
-Client ->(10) Server : [ACK]\nseq=1\n data=1 (op_code)
-Server ->(10) Client : [ACK]\nseq=1
+package "Client Layer" {
+    component [Mobile Application\n(React Native)] as mobile
+    component [Backoffice WebApp\n(React)] as webapp
+}
+
+package "Backend Services" {
+    component [Main Backend Service\n(Node.js)\n\n- API Gateway\n- Business Logic\n- Authentication\n- Data Management] as mainapi
+    component [ML Service\n(Python)\n\n- ML Algorithms\n- Data Processing\n- Model Training\n- Predictions] as mlservice
+}
+
+package "Data Layer" {
+    database [Database\n(PostgreSQL/MongoDB)] as db
+    database [ML Models\n& Training Data] as mldata
+}
+
+cloud "External Services" as external {
+    component [Third-party APIs] as thirdparty
+    component [Cloud Storage] as storage
+}
+
+' Relationships
+mobile --> mainapi : REST/GraphQL API
+webapp --> mainapi : REST/GraphQL API
+mainapi --> db : Database Operations
+mainapi --> mlservice : ML Requests
+mlservice --> mldata : Model & Data Access
+mainapi --> thirdparty : External Integrations
+mainapi --> storage : File Storage
+mlservice --> storage : Model Storage
+
+' Notes
+note right of mobile
+  - iOS & Android support
+  - Real-time updates
+  - Offline capabilities
+  - Push notifications
+end note
+
+note right of webapp
+  - Admin dashboard
+  - Analytics & reporting
+  - User management
+  - System configuration
+end note
+
+note bottom of mainapi
+  - Authentication & authorization
+  - Rate limiting
+  - Logging & monitoring
+  - Load balancing ready
+end note
+
+note bottom of mlservice
+  - Model serving
+  - Batch processing
+  - Real-time predictions
+  - A/B testing support
+end note
 
 @enduml
 #+END_SRC
+
+#+RESULTS:
+[[file:assets/arch-1.png]]
