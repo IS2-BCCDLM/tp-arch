@@ -51,62 +51,62 @@ skinparam cloud {
     BackgroundColor lightyellow
     BorderColor black
 }
+skinparam direction top to bottom
 
-title Core System Architecture
+title System Architecture - Layered View
 
-' Client Layer
+' Top Layer - Infrastructure & Cloud Services
+package "Infrastructure & Cloud Services" {
+    cloud "External Services" {
+        component [Supabase\nStorage + Realtime] as supabase
+        component [Firebase\nCloud Messaging] as firebase
+        component [Twilio\nSMS/WhatsApp] as twilio
+    }
+
+    component [PAAS Platform\n(Heroku/Railway)] as paas
+    component [Monitoring\n(Datadog/Grafana)] as monitoring
+    component [Docker\nContainers] as docker
+}
+
+' Data Storage Layer
+package "Data Storage Layer" {
+    database [PostgreSQL\n(SQL Database)\n\nUser Data\nTransactions\nRelational Data] as postgres
+    database [MongoDB\n(NoSQL Database)\n\nLogs\nAnalytics\nDocument Storage] as mongo
+}
+
+' Microservices Layer
+package "Microservices Layer" {
+    component [Main API Service\n(Node.js + Express/Fastify)\n\nAuthentication\nBusiness Logic\nAPI Gateway] as mainapi
+    component [ML Service\n(Python + FastAPI/Flask)\n\nML Algorithms\nModel Training\nPredictions] as mlservice
+}
+
+' Bottom Layer - Client Applications
 package "Client Applications" {
     component [Mobile App\n(React Native)] as mobile
     component [Backoffice\n(React/Vue.js/Next.js)] as webapp
 }
 
-' Microservices
-package "Microservices" {
-    component [Main API Service\n(Node.js + Express/Fastify)\n\nAuthentication\nBusiness Logic\nAPI Gateway] as mainapi
-    component [ML Service\n(Python + FastAPI/Flask)\n\nML Algorithms\nModel Training\nPredictions] as mlservice
-}
+' Vertical connections (bottom to top)
+mobile -up-> mainapi : REST/GraphQL
+webapp -up-> mainapi : REST/GraphQL
 
-' Databases
-package "Data Storage" {
-    database [PostgreSQL\n(SQL Database)\n\nUser Data\nTransactions\nRelational Data] as postgres
-    database [MongoDB\n(NoSQL Database)\n\nLogs\nAnalytics\nDocument Storage] as mongo
-}
+mainapi -up-> postgres : SQL Operations
+mainapi -up-> mongo : NoSQL Operations
+mlservice -up-> mongo : ML Data
 
-' External Services
-cloud "External Services" {
-    component [Supabase\nStorage + Realtime] as supabase
-    component [Firebase\nCloud Messaging] as firebase
-    component [Twilio\nSMS/WhatsApp] as twilio
-}
+mainapi -up-> docker : Containerized
+mlservice -up-> docker : Containerized
+docker -up-> paas : Deployment
 
-' Infrastructure
-package "Infrastructure" {
-    component [Docker\nContainers] as docker
-    component [PAAS Platform\n(Heroku/Railway)] as paas
-    component [Monitoring\n(Datadog/Grafana)] as monitoring
-}
+mainapi -up-> monitoring : Metrics & Logs
+mlservice -up-> monitoring : ML Metrics
 
-' Connections
-mobile --> mainapi : REST/GraphQL
-webapp --> mainapi : REST/GraphQL
-mobile --> supabase : Chat & Media
-mobile --> firebase : Push Notifications
-
+' Cross-layer connections
+mobile -up-> supabase : Chat & Media
+mobile -up-> firebase : Push Notifications
+mainapi -up-> supabase : Media Storage
+mainapi -up-> twilio : Messaging
 mainapi --> mlservice : Internal API
-mainapi --> postgres : SQL Operations
-mainapi --> mongo : NoSQL Operations
-mainapi --> supabase : Media Storage
-mainapi --> twilio : Messaging
-
-mlservice --> mongo : ML Data
-mlservice --> monitoring : ML Metrics
-
-mainapi --> docker : Containerized
-mlservice --> docker : Containerized
-docker --> paas : Deployment
-
-mainapi --> monitoring : Metrics
-mainapi --> mongo : Application Logs
 
 @enduml
 #+END_SRC
