@@ -41,9 +41,9 @@ skinparam backgroundColor white
 skinparam component {
     BackgroundColor lightblue
     BorderColor black
-    FontSize 12
+    FontSize 10
 }
-skinparam database {
+ skinparam database {
     BackgroundColor lightgreen
     BorderColor black
 }
@@ -51,66 +51,128 @@ skinparam cloud {
     BackgroundColor lightyellow
     BorderColor black
 }
-
-title System Architecture Overview
-
-package "Client Layer" {
-    component [Mobile Application\n(React Native)] as mobile
-    component [Backoffice WebApp\n(React)] as webapp
+skinparam package {
+    BackgroundColor lightgray
+    BorderColor black
 }
 
-package "Backend Services" {
-    component [Main Backend Service\n(Node.js)\n\n- API Gateway\n- Business Logic\n- Authentication\n- Data Management] as mainapi
-    component [ML Service\n(Python)\n\n- ML Algorithms\n- Data Processing\n- Model Training\n- Predictions] as mlservice
+title Complete System Architecture - Mobile App & Backoffice Platform
+
+package "Client Applications" {
+    component [Mobile App\n(React Native + Expo)\n\n- iOS & Android\n- Push Notifications\n- Real-time Chat\n- Offline Support] as mobile
+    component [Backoffice WebApp\n(React/Vue.js/Next.js)\n\n- Admin Dashboard\n- Analytics\n- User Management\n- Content Management] as webapp
+}
+
+package "Microservices Backend" {
+    component [Main API Service\n(Node.js + Express/Fastify)\n\n- Authentication & Authorization\n- Business Logic\n- API Gateway\n- Rate Limiting] as mainapi
+    component [ML Service\n(Python + FastAPI/Flask)\n\n- ML Algorithms\n- Model Training\n- Predictions\n- Data Processing] as mlservice
 }
 
 package "Data Layer" {
-    database [Database\n(PostgreSQL/MongoDB)] as db
-    database [ML Models\n& Training Data] as mldata
+    database [SQL Database\n(PostgreSQL)\n\n- User Data\n- Business Logic\n- Transactions] as sqldb
+    database [NoSQL Database\n(MongoDB)\n\n- Logs\n- Analytics Data\n- Content Storage] as nosqldb
 }
 
-cloud "External Services" as external {
-    component [Third-party APIs] as thirdparty
-    component [Cloud Storage] as storage
+package "External Services" {
+    cloud "Supabase" {
+        component [Supabase Storage\n(Multimedia Content)] as supabase_storage
+        component [Supabase Realtime\n(Real-time Chat)] as supabase_realtime
+    }
+    cloud "Firebase" {
+        component [Firebase Cloud Messaging\n(Push Notifications)] as fcm
+    }
+    cloud "Twilio" {
+        component [SMS/WhatsApp\nMessaging] as twilio
+    }
 }
 
-' Relationships
+package "Infrastructure & DevOps" {
+    component [Docker Containers\n\n- Lightweight Images\n- Multi-stage Builds\n- Production Ready] as docker
+    component [CI/CD Pipeline\n(GitHub Actions)\n\n- Automated Testing\n- Code Coverage (75%+)\n- Lint Checks\n- Auto Deployment] as cicd
+    component [Monitoring\n(Datadog/Grafana)\n\n- Performance Metrics\n- Error Tracking\n- Alerting] as monitoring
+    component [Logging System\n\n- Error/Warn/Info/Debug\n- Centralized Logs\n- Log Retention] as logging
+}
+
+package "Cloud Platform (PAAS)" {
+    component [Cloud Deployment\n(Heroku/Railway/Vercel)\n\n- Auto Scaling\n- Load Balancing\n- SSL/TLS] as paas
+    component [Kubernetes\n(Optional Migration)\n\n- Container Orchestration\n- Service Discovery\n- Auto Scaling] as k8s
+}
+
+package "Code Quality & Testing" {
+    component [Testing Suite\n\n- Unit Tests (Backend)\n- Integration Tests\n- Code Coverage > 75%\n- Linting Standards] as testing
+    component [Coverage Reports\n(Coveralls/Codecov)\n\n- Automated Reports\n- GitHub Pages\n- Quality Gates] as coverage
+}
+
+' Client to Backend connections
 mobile --> mainapi : REST/GraphQL API
 webapp --> mainapi : REST/GraphQL API
-mainapi --> db : Database Operations
-mainapi --> mlservice : ML Requests
-mlservice --> mldata : Model & Data Access
-mainapi --> thirdparty : External Integrations
-mainapi --> storage : File Storage
-mlservice --> storage : Model Storage
+
+' Backend service connections
+mainapi --> mlservice : Internal API
+mainapi --> sqldb : Database Operations
+mainapi --> nosqldb : Logs & Analytics
+mlservice --> nosqldb : ML Data Storage
+
+' External service connections
+mobile --> supabase_realtime : Real-time Chat
+mobile --> fcm : Push Notifications
+mainapi --> supabase_storage : Media Upload/Download
+mainapi --> twilio : SMS/WhatsApp
+mainapi --> supabase_realtime : Chat Backend
+
+' Infrastructure connections
+mainapi --> docker : Containerization
+mlservice --> docker : Containerization
+docker --> paas : Deployment
+paas --> k8s : Optional Migration
+mainapi --> monitoring : Metrics & Alerts
+mlservice --> monitoring : ML Metrics
+mainapi --> logging : Application Logs
+mlservice --> logging : ML Logs
+
+' CI/CD connections
+cicd --> testing : Run Tests
+cicd --> coverage : Generate Reports
+cicd --> docker : Build Images
+cicd --> paas : Auto Deploy
 
 ' Notes
-note right of mobile
-  - iOS & Android support
-  - Real-time updates
-  - Offline capabilities
-  - Push notifications
+note top of mobile
+  React Native with Expo
+  Cross-platform deployment
+  FCM integration for notifications
 end note
 
-note right of webapp
-  - Admin dashboard
-  - Analytics & reporting
-  - User management
-  - System configuration
+note top of webapp
+  Modern React/Vue.js/Next.js
+  Responsive design
+  Admin functionalities
 end note
 
-note bottom of mainapi
-  - Authentication & authorization
-  - Rate limiting
-  - Logging & monitoring
-  - Load balancing ready
+note right of mainapi
+  Node.js with Express/Fastify/Nest.js
+  JWT Authentication
+  API rate limiting
+  Comprehensive logging
 end note
 
-note bottom of mlservice
-  - Model serving
-  - Batch processing
-  - Real-time predictions
-  - A/B testing support
+note right of mlservice
+  Python with FastAPI/Flask/Django
+  Separate ML processing
+  Model versioning
+  Async processing
+end note
+
+note bottom of sqldb
+  PostgreSQL for ACID compliance
+  User data & transactions
+  Relational integrity
+end note
+
+note bottom of nosqldb
+  MongoDB for flexibility
+  Logs & analytics
+  Document storage
 end note
 
 @enduml
