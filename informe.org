@@ -1,5 +1,6 @@
 #+LANGUAGE: es
-#+OPTIONS: toc:nil title:nil
+#+OPTIONS: title:nil html-style:nil
+#+SETUPFILE: ./org/theme-readtheorg.setup
 
 #+LATEX_CLASS_OPTIONS: [titlepage,a4paper]
 #+LATEX_HEADER_EXTRA: \hypersetup{colorlinks=true,linkcolor=black,urlcolor=blue,bookmarksopen=true}
@@ -68,6 +69,8 @@
 \newpage
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
 #+END_EXPORT
+
+* Architecture Diagram
 
 #+BEGIN_SRC plantuml :file assets/arch-1.png :exports results
 @startuml
@@ -154,3 +157,4 @@ end note
 
 #+RESULTS:
 [[file:assets/arch-1.png]]
+
