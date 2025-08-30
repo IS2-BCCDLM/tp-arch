@@ -8,6 +8,9 @@
 (require 'org)
 (require 'ox-html)
 
+;; Set TOC to true
+(setq org-export-with-toc t)
+
 ;; Configure paths
 (setq org-file (car command-line-args-left))
 

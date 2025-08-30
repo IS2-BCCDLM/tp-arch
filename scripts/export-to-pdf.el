@@ -8,6 +8,9 @@
 (require 'org)
 (require 'ox-latex)
 
+;; Set TOC to true
+(setq org-export-with-toc nil)
+
 (setq org-latex-pdf-process
       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
