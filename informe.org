@@ -114,6 +114,112 @@ mainapi --> mlservice : Internal API
 #+RESULTS:
 [[file:assets/arch-1.png]]
 
+** Microservicios
+
+#+BEGIN_SRC plantuml :file assets/arch-microservices.png :exports results
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam component {
+    BackgroundColor lightblue
+    BorderColor black
+    FontSize 10
+}
+skinparam package {
+    BackgroundColor lightgray
+    BorderColor black
+}
+skinparam direction top to bottom
+
+title Microservices Layer - Detailed Modules
+
+package "Main API Service (Node.js)" {
+    package "Authentication & Users" {
+        component [User Management\n\n- User Registration\n- Login (Email/Password)\n- Federated Login\n- Password Recovery\n- User Blocking] as userauth
+        component [Profile Management\n\n- Edit Profile\n- View Own Profile\n- View Other Profiles\n- User Preferences] as profile
+    }
+
+    package "Content Management" {
+        component [Artist Management\n\n- Artist Profiles\n- Discography\n- Collaborations\n- Artist Relations\n- Popular Tracks] as artist
+        component [Content Catalog\n\n- Song Upload\n- Metadata Management\n- Release Management\n- Content Discovery\n- Search Engine] as catalog
+        component [Availability Control\n\n- Regional Availability\n- Time Windows\n- Content Blocking\n- State Transitions] as availability
+    }
+
+    package "User Experience" {
+        component [Playback Service\n\n- Audio Streaming\n- Playback Controls\n- Queue Management\n- Video Playback] as playback
+        component [Library Management\n\n- Playlists Creation\n- Favorites (Liked Songs)\n- Playback History\n- Content Organization] as library
+        component [Social Features\n\n- User Following\n- Activity Sharing\n- Friend Activity\n- Content Sharing] as social
+    }
+
+    package "Communication" {
+        component [Notification Service\n\n- Push Notifications\n- Deep Linking\n- SMS Integration\n- WhatsApp Integration] as notifications
+        component [Real-time Features\n\n- Chat Integration\n- Live Updates\n- Activity Streams] as realtime
+    }
+
+    package "Administration" {
+        component [Admin Panel\n\n- User Administration\n- Content Moderation\n- System Configuration\n- Platform Control] as admin
+        component [Metrics & Analytics\n\n- User Metrics\n- Content Metrics\n- Artist Performance\n- Business Intelligence] as metrics
+    }
+}
+
+package "ML Service (Python)" {
+    package "Recommendation Engine" {
+        component [Content Recommendations\n\n- Similar Artists\n- Related Songs\n- Personalized Suggestions\n- Collaborative Filtering] as recommendations
+        component [Smart Playlists\n\n- Mood Mixes\n- Contextual Playlists\n- Thematic Playlists\n- Time-based Suggestions] as smartplaylists
+    }
+
+    package "Intelligent Features" {
+        component [Auto-completion\n\n- Metadata Suggestions\n- Fast Complete\n- Content Tagging\n- Genre Classification] as autocomplete
+        component [Radio & Discovery\n\n- Radio by Song\n- Auto Play\n- Continuous Play\n- Discovery Engine] as radio
+    }
+
+    package "Onboarding Intelligence" {
+        component [User Onboarding\n\n- Genre Preferences\n- Artist Recommendations\n- Taste Profiling\n- Initial Setup] as onboarding
+    }
+
+    package "Analytics Engine" {
+        component [Behavior Analysis\n\n- Listening Patterns\n- User Segmentation\n- Trend Analysis\n- Performance Prediction] as analytics
+    }
+}
+
+' Inter-service connections
+userauth --> recommendations : User Preferences
+profile --> onboarding : User Setup
+catalog --> autocomplete : Metadata Enhancement
+playback --> radio : Playback Context
+library --> smartplaylists : User Library Data
+social --> analytics : Social Interactions
+metrics --> analytics : Platform Metrics
+artist --> recommendations : Artist Data
+
+' Notes
+note right of userauth
+  Handles all authentication flows
+  including federated login
+end note
+
+note right of recommendations
+  ML-powered content discovery
+  based on user behavior
+end note
+
+note left of autocomplete
+  AI-assisted metadata completion
+  for artist content uploads
+end note
+
+note left of smartplaylists
+  Context-aware playlist generation
+  using mood and time analysis
+end note
+
+@enduml
+#+END_SRC
+
+#+RESULTS:
+[[file:assets/arch-microservices.png]]
+
 * Decisiones de Arquitectura
 
 ** Microservicios
