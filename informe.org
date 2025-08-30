@@ -119,3 +119,51 @@ end note
 #+RESULTS:
 [[file:assets/arch-1.png]]
 
+* Decisiones de Arquitectura
+
+** Microservicios
+- Por qué se eligieron los microservicios específicos
+- Beneficios obtenidos
+- Desafíos enfrentados
+
+** Tecnologías Utilizadas
+- Razones para elegir Node.js, Python, PostgreSQL, etc.
+- Alternativas consideradas y por qué se descartaron
+- Integración entre tecnologías
+
+* Funcionalidades Incompletas y Errores Conocidos
+
+** Funcionalidades Pendientes
+- Lista de features no implementadas
+- Razones por las que no se completaron
+- Planes para futuras iteraciones
+
+** Errores Conocidos
+- Bugs identificados en la entrega final
+- Impacto en la funcionalidad
+- Workarounds disponibles
+
+* Problemas Encontrados y Lecciones Aprendidas
+
+** Problemas Técnicos
+- Desafíos durante el desarrollo
+- Soluciones implementadas
+- Tiempo invertido en resolverlos
+
+** Lecciones Aprendidas
+- Mejores prácticas descubiertas
+- Cambios en el enfoque del proyecto
+- Recomendaciones para proyectos futuros
+
+* Demostraciones de Features Destacadas
+
+** Feature 1: [Nombre de la Feature]
+- Descripción de la implementación
+- Por qué se destaca
+- Código o diagrama relevante
+
+** Feature 2: [Nombre de la Feature]
+- Descripción de la implementación
+- Por qué se destaca
+- Código o diagrama relevante
+
