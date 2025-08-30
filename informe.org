@@ -41,9 +41,9 @@ skinparam backgroundColor white
 skinparam component {
     BackgroundColor lightblue
     BorderColor black
-    FontSize 10
+    FontSize 12
 }
- skinparam database {
+skinparam database {
     BackgroundColor lightgreen
     BorderColor black
 }
@@ -51,129 +51,62 @@ skinparam cloud {
     BackgroundColor lightyellow
     BorderColor black
 }
-skinparam package {
-    BackgroundColor lightgray
-    BorderColor black
-}
 
-title Complete System Architecture - Mobile App & Backoffice Platform
+title Core System Architecture
 
+' Client Layer
 package "Client Applications" {
-    component [Mobile App\n(React Native + Expo)\n\n- iOS & Android\n- Push Notifications\n- Real-time Chat\n- Offline Support] as mobile
-    component [Backoffice WebApp\n(React/Vue.js/Next.js)\n\n- Admin Dashboard\n- Analytics\n- User Management\n- Content Management] as webapp
+    component [Mobile App\n(React Native)] as mobile
+    component [Backoffice\n(React/Vue.js/Next.js)] as webapp
 }
 
-package "Microservices Backend" {
-    component [Main API Service\n(Node.js + Express/Fastify)\n\n- Authentication & Authorization\n- Business Logic\n- API Gateway\n- Rate Limiting] as mainapi
-    component [ML Service\n(Python + FastAPI/Flask)\n\n- ML Algorithms\n- Model Training\n- Predictions\n- Data Processing] as mlservice
+' Microservices
+package "Microservices" {
+    component [Main API Service\n(Node.js + Express/Fastify)\n\nAuthentication\nBusiness Logic\nAPI Gateway] as mainapi
+    component [ML Service\n(Python + FastAPI/Flask)\n\nML Algorithms\nModel Training\nPredictions] as mlservice
 }
 
-package "Data Layer" {
-    database [SQL Database\n(PostgreSQL)\n\n- User Data\n- Business Logic\n- Transactions] as sqldb
-    database [NoSQL Database\n(MongoDB)\n\n- Logs\n- Analytics Data\n- Content Storage] as nosqldb
+' Databases
+package "Data Storage" {
+    database [PostgreSQL\n(SQL Database)\n\nUser Data\nTransactions\nRelational Data] as postgres
+    database [MongoDB\n(NoSQL Database)\n\nLogs\nAnalytics\nDocument Storage] as mongo
 }
 
-package "External Services" {
-    cloud "Supabase" {
-        component [Supabase Storage\n(Multimedia Content)] as supabase_storage
-        component [Supabase Realtime\n(Real-time Chat)] as supabase_realtime
-    }
-    cloud "Firebase" {
-        component [Firebase Cloud Messaging\n(Push Notifications)] as fcm
-    }
-    cloud "Twilio" {
-        component [SMS/WhatsApp\nMessaging] as twilio
-    }
+' External Services
+cloud "External Services" {
+    component [Supabase\nStorage + Realtime] as supabase
+    component [Firebase\nCloud Messaging] as firebase
+    component [Twilio\nSMS/WhatsApp] as twilio
 }
 
-package "Infrastructure & DevOps" {
-    component [Docker Containers\n\n- Lightweight Images\n- Multi-stage Builds\n- Production Ready] as docker
-    component [CI/CD Pipeline\n(GitHub Actions)\n\n- Automated Testing\n- Code Coverage (75%+)\n- Lint Checks\n- Auto Deployment] as cicd
-    component [Monitoring\n(Datadog/Grafana)\n\n- Performance Metrics\n- Error Tracking\n- Alerting] as monitoring
-    component [Logging System\n\n- Error/Warn/Info/Debug\n- Centralized Logs\n- Log Retention] as logging
+' Infrastructure
+package "Infrastructure" {
+    component [Docker\nContainers] as docker
+    component [PAAS Platform\n(Heroku/Railway)] as paas
+    component [Monitoring\n(Datadog/Grafana)] as monitoring
 }
 
-package "Cloud Platform (PAAS)" {
-    component [Cloud Deployment\n(Heroku/Railway/Vercel)\n\n- Auto Scaling\n- Load Balancing\n- SSL/TLS] as paas
-    component [Kubernetes\n(Optional Migration)\n\n- Container Orchestration\n- Service Discovery\n- Auto Scaling] as k8s
-}
+' Connections
+mobile --> mainapi : REST/GraphQL
+webapp --> mainapi : REST/GraphQL
+mobile --> supabase : Chat & Media
+mobile --> firebase : Push Notifications
 
-package "Code Quality & Testing" {
-    component [Testing Suite\n\n- Unit Tests (Backend)\n- Integration Tests\n- Code Coverage > 75%\n- Linting Standards] as testing
-    component [Coverage Reports\n(Coveralls/Codecov)\n\n- Automated Reports\n- GitHub Pages\n- Quality Gates] as coverage
-}
-
-' Client to Backend connections
-mobile --> mainapi : REST/GraphQL API
-webapp --> mainapi : REST/GraphQL API
-
-' Backend service connections
 mainapi --> mlservice : Internal API
-mainapi --> sqldb : Database Operations
-mainapi --> nosqldb : Logs & Analytics
-mlservice --> nosqldb : ML Data Storage
+mainapi --> postgres : SQL Operations
+mainapi --> mongo : NoSQL Operations
+mainapi --> supabase : Media Storage
+mainapi --> twilio : Messaging
 
-' External service connections
-mobile --> supabase_realtime : Real-time Chat
-mobile --> fcm : Push Notifications
-mainapi --> supabase_storage : Media Upload/Download
-mainapi --> twilio : SMS/WhatsApp
-mainapi --> supabase_realtime : Chat Backend
-
-' Infrastructure connections
-mainapi --> docker : Containerization
-mlservice --> docker : Containerization
-docker --> paas : Deployment
-paas --> k8s : Optional Migration
-mainapi --> monitoring : Metrics & Alerts
+mlservice --> mongo : ML Data
 mlservice --> monitoring : ML Metrics
-mainapi --> logging : Application Logs
-mlservice --> logging : ML Logs
 
-' CI/CD connections
-cicd --> testing : Run Tests
-cicd --> coverage : Generate Reports
-cicd --> docker : Build Images
-cicd --> paas : Auto Deploy
+mainapi --> docker : Containerized
+mlservice --> docker : Containerized
+docker --> paas : Deployment
 
-' Notes
-note top of mobile
-  React Native with Expo
-  Cross-platform deployment
-  FCM integration for notifications
-end note
-
-note top of webapp
-  Modern React/Vue.js/Next.js
-  Responsive design
-  Admin functionalities
-end note
-
-note right of mainapi
-  Node.js with Express/Fastify/Nest.js
-  JWT Authentication
-  API rate limiting
-  Comprehensive logging
-end note
-
-note right of mlservice
-  Python with FastAPI/Flask/Django
-  Separate ML processing
-  Model versioning
-  Async processing
-end note
-
-note bottom of sqldb
-  PostgreSQL for ACID compliance
-  User data & transactions
-  Relational integrity
-end note
-
-note bottom of nosqldb
-  MongoDB for flexibility
-  Logs & analytics
-  Document storage
-end note
+mainapi --> monitoring : Metrics
+mainapi --> mongo : Application Logs
 
 @enduml
 #+END_SRC
